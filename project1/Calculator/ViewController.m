@@ -61,6 +61,18 @@
     }
 }
 
+- (IBAction)deletePressed {
+    self.display.text = @"0";
+}
+
+- (IBAction)toggleNeg {
+    double value = [self.display.text doubleValue];
+    value *= (-1);
+    self.display.text = [@(value) stringValue];
+}
+
+
+
 - (IBAction)enterPressed {
     [self.brain pushOperand:[self.display.text doubleValue]];
     if (self.userIsInTheMiddleOfEnteringANumber) {
