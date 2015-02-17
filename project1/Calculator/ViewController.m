@@ -8,10 +8,12 @@
 
 #import "ViewController.h"
 #import "CalculatorBrain.h"
+#import "GraphViewController.h"
 
 @interface ViewController ()
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic) BOOL userEnteredDecimal;
+@property (nonatomic) BOOL shouldNotEvaluate;
 @property (nonatomic, strong) CalculatorBrain *brain;
 @end
 
@@ -21,6 +23,7 @@
 @synthesize operationsDisplay;
 @synthesize userIsInTheMiddleOfEnteringANumber;
 @synthesize userEnteredDecimal;
+@synthesize shouldNotEvaluate;
 @synthesize brain = _brain;
 
 - (CalculatorBrain *)brain{
@@ -37,6 +40,13 @@
         self.userIsInTheMiddleOfEnteringANumber = YES;
     }
 }
+- (IBAction)xPressed {
+    [self.brain pushToStack:@"x"];
+    self.display.text = @"x";
+    [self editOperationsDisplay:@"x" andEvaluate:NO];
+    self.userIsInTheMiddleOfEnteringANumber = NO;
+    self.shouldNotEvaluate = YES;
+}
 
 - (IBAction)decimalPressed {
     if (! self.userEnteredDecimal){
@@ -51,8 +61,14 @@
         [self enterPressed];
     }
     NSString *operation = [sender currentTitle];
-    double result = [self.brain performOperation:operation];
-    self.display.text = [NSString stringWithFormat:@"%g", result];
+    if (shouldNotEvaluate){
+        [self.brain pushToStack:operation];
+    }
+    else {
+        double result = [self.brain performOperation:operation];
+        self.display.text = [NSString stringWithFormat:@"%g", result];
+    }
+    
     if (! [operation isEqualToString:@"Pi"]) {
         [self editOperationsDisplay:operation andEvaluate:YES];
     } else {
@@ -71,10 +87,16 @@
     self.display.text = [@(value) stringValue];
 }
 
+- (IBAction)testFunction:(id)sender {
+    
+    double num = [self.brain runProgram:(5.0)];
+    self.display.text = [@(num) stringValue];
+}
 
 
 - (IBAction)enterPressed {
-    [self.brain pushOperand:[self.display.text doubleValue]];
+    if (![self.display.text isEqualToString: @"x"])
+        [self.brain pushOperand:[self.display.text doubleValue]];
     if (self.userIsInTheMiddleOfEnteringANumber) {
         [self editOperationsDisplay:self.display.text andEvaluate:NO];
     }
@@ -90,11 +112,19 @@
     }
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    GraphViewController *gvc = [segue destinationViewController];
+    [gvc setGraphView:[[GraphView alloc] init]];
+
+    [segue.destinationViewController generateGraph: self.brain];
+}
+
 - (IBAction)clearAll {
     self.operationsDisplay.text = @"";
     self.display.text = @"0";
     self.userIsInTheMiddleOfEnteringANumber = NO;
     self.userEnteredDecimal = NO;
+    self.shouldNotEvaluate = NO;
     _brain = [[CalculatorBrain alloc] init];
 }
 @end

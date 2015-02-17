@@ -16,6 +16,7 @@
 
 @synthesize operandStack = _operandStack;
 
+
 - (NSMutableArray *)operandStack
 {
     if (!_operandStack) {
@@ -32,9 +33,20 @@
 
 - (double)popOperand
 {
-    NSNumber *operandObject = [self.operandStack lastObject];
+    NSNumber *operandObject;
+    operandObject = [self.operandStack lastObject];
+    
+    
     if (operandObject) [self.operandStack removeLastObject];
     return [operandObject doubleValue];
+}
+
+- (void)pushToStack:(NSString *) toStack{
+    [self.operandStack addObject:toStack];
+}
+
++ (NSString *)descriptionOfProgram:(id)program{
+        return @"this is a function... that does things";
 }
 
 - (double)performOperation:(NSString *)operation
@@ -70,4 +82,33 @@
     return result;
 }
 
+-(double) runProgram:(double) valX
+{
+    
+    NSMutableArray *copiedStack = [[NSMutableArray alloc] initWithArray: self.operandStack copyItems:YES];
+    //NSMutableArray *copiedStack2 = [[NSMutableArray alloc] initWithArray: self.operandStack copyItems:YES];
+    
+    [self.operandStack removeAllObjects];
+    for (int x = 0; x < copiedStack.count; x++){
+        id obj = [copiedStack objectAtIndex:x];
+        //If it's a string, either it's an x variable or an operator
+        if ([obj isKindOfClass:[NSString class]]){
+            if ([(NSString *) obj isEqualToString: @"x"]){
+                [self pushOperand:valX];
+            }else{
+                //evaluate operation using perform operation
+                [self performOperation:((NSString *) obj)];
+            }
+            
+        }else{
+            //pushes number into stack
+            double num = [obj doubleValue];
+            [self pushOperand:num];
+        }
+    }
+    
+    double result = [[self.operandStack lastObject] doubleValue];
+    self.operandStack = copiedStack;
+    return result;
+}
 @end
