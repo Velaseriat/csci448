@@ -12,7 +12,7 @@
 
 @interface GraphViewController() <GraphViewDataSource>
 @property (nonatomic, strong) CalculatorBrain *brain;
-@property (nonatomic, weak) IBOutlet GraphView *graphView;
+@property (strong, nonatomic) IBOutlet GraphView *graphView;
 
 @end
 

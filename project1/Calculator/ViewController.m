@@ -113,8 +113,8 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    GraphViewController *gvc = [segue destinationViewController];
-    [gvc setGraphView:[[GraphView alloc] init]];
+    //GraphViewController *gvc = [segue destinationViewController];
+    //[gvc setGraphView:[[GraphView alloc] init]];
 
     [segue.destinationViewController generateGraph: self.brain];
 }

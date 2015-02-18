@@ -66,9 +66,9 @@
     } else if ([operation isEqualToString:@"Pi"]) {
         result = M_PI;
     } else if ([operation isEqualToString:@"sin"]) {
-        result = sin([self popOperand]*(M_PI/180));
+        result = sin([self popOperand]*(M_PI));
     } else if ([operation isEqualToString:@"cos"]) {
-        result = cos([self popOperand]*(M_PI/180));
+        result = cos([self popOperand]*(M_PI));
     } else if ([operation isEqualToString:@"sqrt"]) {
         result = sqrt([self popOperand]);
     }
